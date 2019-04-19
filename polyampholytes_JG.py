@@ -6,7 +6,7 @@ from localcider.sequenceParameters import SequenceParameters
 kappa = 1
 charge_bal = 0.7
 window_sizes = [60]
-cutoffs = [0.5]
+cutoffs = [0.6]
 
 def score_polyamp(s, window, cutoff):
     #s: seq, window: window size, cutoff: the minimum score to be considered as significant
