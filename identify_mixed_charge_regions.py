@@ -9,8 +9,8 @@ window_sizes = [60]
 cutoffs = [0.6]
 
 def score_polyamp(s, window, cutoff):
-    #s: seq, window: window size, cutoff: the minimum score to be considered as significant
-    #returns a string combining all the regions
+    #s: amino acid seq, window: window size, cutoff: the minimum score to be considered as significant
+    #returns a string combining all the mixed charge regions
     polyamph_regions = []
     polyamph_start = 0
     polyamph_end = 0
@@ -23,7 +23,7 @@ def score_polyamp(s, window, cutoff):
         region = s[start:end]
 
         pos = region.count('R')+region.count('K')
-        neg = region.count('E')+region.count('D')#+region.count('X')
+        neg = region.count('E')+region.count('D')
         score = pos+neg
 
         if score>=cutoff:
@@ -51,7 +51,7 @@ def score_polyamp(s, window, cutoff):
     return polyamph_regions
 
 def get_polyamp_regions(inputFasta,outputFile):
-    # look for polyamph regions in each protein, write all of them in the outfile, separated by a space. Each entry is preceeded by its accession
+    # look for mixed charge regions in each protein. Each entry is preceeded by its accession
     seqs,out,added = [],[],{}
     with open(inputFasta,'rU') as infile, open(outputFile,'wb') as outf:
         reader = SeqIO.parse(infile,'fasta')
@@ -100,7 +100,7 @@ for window_size in window_sizes:
         outfile = path + str(window_size)+'_'+str(cut_off)+'_k'+str(kappa)+'bal'+str(charge_bal)+"polyamph_no_phos_separated.txt"
         get_polyamp_regions(human_proteome,outfile)
 
-### get a list of those in speckles
+### get a list of those annotated to be in speckles
 speck = {}
 with open(path2+'panther_speckle.txt','r') as inf:
     reader = csv.reader(inf,delimiter = '\t')
@@ -152,7 +152,7 @@ for window_size in window_sizes:
         ax.xaxis.set_major_locator(ticker.MultipleLocator(0.1))
 
         plt.title('Window size: '+str(window_size)+', FC: '+str(cut_off))
-        f.colorbar(points,boundaries=numpy.linspace(0,1,11),label = 'kappa') #######change this based on max kappa
+        f.colorbar(points,boundaries=numpy.linspace(0,1,11),label = 'kappa') 
         # plt.show()
         plt.savefig(path+str(window_size)+'_'+str(cut_off)+'bal_'+str(charge_bal)+'k'+str(kappa)+'_speck_no_phos.pdf')
         plt.clf()
